@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EarnNest Profile</title>
+
+<style>
+:root{
+    --primary:#004d40;
+    --secondary:#00695c;
+    --bg:#f5f7fa;
+    --white:#fff;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:var(--bg);
+}
+
+.container{
+    max-width:1000px;
+    margin:20px auto;
+    padding:20px;
+}
+
+.profile-card{
+    background:var(--white);
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:0 4px 15px rgba(0,0,0,.08);
+}
+
+.cover{
+    height:180px;
+    background:linear-gradient(135deg,#004d40,#00695c);
+}
+
+.profile-info{
+    text-align:center;
+    margin-top:-60px;
+    padding:20px;
+}
+
+.avatar{
+    width:120px;
+    height:120px;
+    border-radius:50%;
+    background:white;
+    border:5px solid white;
+    margin:auto;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:40px;
+    font-weight:bold;
+    color:#004d40;
+}
+
+.username{
+    margin-top:15px;
+    font-size:24px;
+    font-weight:bold;
+}
+
+.email{
+    color:#666;
+    margin-top:5px;
+}
+
+.badge{
+    display:inline-block;
+    background:#004d40;
+    color:white;
+    padding:8px 15px;
+    border-radius:30px;
+    margin-top:10px;
+}
+
+.details{
+    padding:25px;
+}
+
+.section-title{
+    color:#004d40;
+    margin-bottom:15px;
+}
+
+.detail-row{
+    display:flex;
+    justify-content:space-between;
+    padding:15px 0;
+    border-bottom:1px solid #eee;
+}
+
+.label{
+    color:#666;
+}
+
+.value{
+    font-weight:bold;
+}
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:15px;
+    margin-top:25px;
+}
+
+.stat{
+    background:#f8f9fa;
+    padding:20px;
+    border-radius:15px;
+    text-align:center;
+}
+
+.stat h3{
+    color:#004d40;
+}
+
+.stat p{
+    margin-top:10px;
+    font-size:22px;
+    font-weight:bold;
+}
+
+.btn{
+    width:100%;
+    margin-top:20px;
+    padding:15px;
+    border:none;
+    border-radius:12px;
+    background:#004d40;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+}
+
+@media(max-width:600px){
+.detail-row{
+    flex-direction:column;
+    gap:5px;
+}
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<div class="profile-card">
+
+<div class="cover"></div>
+
+<div class="profile-info">
+
+<div class="avatar">D</div>
+
+<div class="username">Denex</div>
+
+<div class="email">denex@example.com</div>
+
+<div class="badge">Active Member</div>
+<button class="btn">
+Edit Profile
+</button>
+
+</div>
+
+<div class="details">
+
+<h2 class="section-title">Personal Information</h2>
+
+<div class="detail-row">
+<div class="label">Full Name</div>
+<div class="value">Denex</div>
+</div>
+
+<div class="detail-row">
+<div class="label">Username</div>
+<div class="value">@denexworld</div>
+</div>
+
+<div class="detail-row">
+<div class="label">Email</div>
+<div class="value">denex@example.com</div>
+</div>
+
+<div class="detail-row">
+<div class="label">Country</div>
+<div class="value">Nigeria</div>
+</div>
+
+<div class="detail-row">
+<div class="label">Member Since</div>
+<div class="value">June 2026</div>
+</div>
+
+<div class="stats">
+
+<div class="stat">
+<h3>Balance</h3>
+<p>$0.00</p>
+</div>
+
+<div class="stat">
+<h3>Total Earnings</h3>
+<p>$0.00</p>
+</div>
+
+<div class="stat">
+<h3>Tasks Completed</h3>
+<p>0</p>
+</div>
+
+<div class="stat">
+<h3>Referrals</h3>
+<p>0</p>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</body>
+</html>
