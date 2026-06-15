@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Earnest</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: #f0f2f5; font-family: 'Segoe UI', sans-serif; color: #1e293b; }
+        .navbar { background: white; padding: 1rem 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); flex-wrap: wrap; gap: 1rem; }
+        .logo { font-size: 1.5rem; font-weight: bold; background: linear-gradient(135deg, #004d40, #006064); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .nav-links { display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap; }
+        .nav-links a { text-decoration: none; color: #555; font-weight: 500; cursor: pointer; padding: 0.5rem 0; transition: color 0.3s; }
+        .nav-links a:hover { color: #004d40; }
+        .nav-links a.active { color: #004d40; border-bottom: 2px solid #004d40; }
+        .user-info { display: flex; align-items: center; gap: 1rem; background: #e8f4f0; padding: 0.3rem 1rem; border-radius: 50px; }
+        .user-name { font-weight: bold; color: #004d40; }
+        .logout-btn { background: #ef4444; color: white; border: none; padding: 0.4rem 1rem; border-radius: 20px; cursor: pointer; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 2rem 5%; }
+        .welcome-banner { background: linear-gradient(135deg, #004d40, #006064); color: white; padding: 2rem; border-radius: 20px; margin-bottom: 2rem; }
+        .welcome-banner h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .stat-card { background: white; padding: 1.5rem; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: transform 0.3s; }
+        .stat-card:hover { transform: translateY(-5px); }
+        .stat-label { font-size: 0.85rem; color: #64748b; text-transform: uppercase; margin-bottom: 0.5rem; }
+        .stat-value { font-size: 2rem; font-weight: bold; color: #004d40; }
+        .action-buttons { display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
+        .btn-deposit { background: #004d40; color: white; border: none; padding: 0.8rem 2rem; border-radius: 10px; font-weight: bold; cursor: pointer; flex: 1; min-width: 150px; }
+        .btn-withdraw { background: #ffc107; color: #333; border: none; padding: 0.8rem 2rem; border-radius: 10px; font-weight: bold; cursor: pointer; flex: 1; min-width: 150px; }
+        .section-title { font-size: 1.5rem; margin-bottom: 1.5rem; color: #004d40; }
+        .earn-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .earn-card { background: white; padding: 1.5rem; border-radius: 20px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.05); cursor: pointer; transition: all 0.3s; }
+        .earn-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+        .earn-icon { font-size: 3rem; margin-bottom: 1rem; }
+        .earn-card h3 { color: #004d40; margin-bottom: 0.5rem; }
+        .earn-card p { color: #64748b; font-size: 0.9rem; }
+        .earn-amount { margin-top: 1rem; font-weight: bold; color: #ffc107; font-size: 1.1rem; }
+        .referral-section { background: white; padding: 2rem; border-radius: 20px; margin-bottom: 2rem; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .referral-code { background: #f0f2f5; padding: 1rem; border-radius: 10px; font-family: monospace; font-size: 1.2rem; margin: 1rem auto; display: inline-block; }
+        .copy-btn { background: #004d40; color: white; border: none; padding: 0.5rem 1.5rem; border-radius: 8px; cursor: pointer; margin-left: 1rem; }
+        .activity-section { background: white; padding: 1.5rem; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .activity-list { list-style: none; }
+        .activity-item { display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 0; border-bottom: 1px solid #e2e8f0; }
+        .toast { position: fixed; bottom: 30px; right: 30px; background: #ef4444; color: white; padding: 12px 20px; border-radius: 10px; z-index: 1000; animation: slideIn 0.3s ease; }
+        .toast.success { background: #10b981; }
+        .toast.info { background: #3b82f6; }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @media (max-width: 768px) { .navbar { flex-direction: column; text-align: center; } .stats-grid { grid-template-columns: 1fr; } .action-buttons { flex-direction: column; } }
+    </style>
+    
+    <script type="module">
+        const firebaseConfig = {
+  apiKey: "AIzaSyCLP5ppkhoba7o3lQo_leBbO_jzaVWNzg8",
+  authDomain: "earnnest-8572a.firebaseapp.com",
+  projectId: "earnnest-8572a",
+  storageBucket: "earnnest-8572a.firebasestorage.app",
+  messagingSenderId: "902250376019",
+  appId: "1:902250376019:web:cbf3dfb67f02261a2f0fa6"
+};
+        
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+        import { getAuth, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+        import { getFirestore, doc, getDoc, updateDoc, increment, onSnapshot, collection, query, where, getDocs, setDoc } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        const userNameSpan = document.getElementById('userName');
+        const balanceSpan = document.getElementById('balance');
+        const totalEarnedSpan = document.getElementById('totalEarned');
+        const referralsCountSpan = document.getElementById('referralsCount');
+        const referralCodeSpan = document.getElementById('referralCode');
+        const activityList = document.getElementById('activityList');
+        
+        function showToast(message, type = 'error') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerText = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 4000);
+        }
+        
+        function generateReferralCode() {
+            return Math.random().toString(36).substring(2, 10).toUpperCase();
+        }
+        
+        async function ensureUserDocument(userId, email, username) {
+            const userRef = doc(db, 'users', userId);
+            const userDoc = await getDoc(userRef);
+            if (!userDoc.exists()) {
+                await setDoc(userRef, {
+                    username: username || email.split('@')[0],
+                    email: email,
+                    balance: 5.00,
+                    totalEarned: 5.00,
+                    referralCode: generateReferralCode(),
+                    createdAt: new Date()
+                });
+                return true;
+            }
+            return false;
+        }
+        
+        async function loadUserData(userId) {
+            const userRef = doc(db, 'users', userId);
+            const userDoc = await getDoc(userRef);
+            if (userDoc.exists()) {
+                const data = userDoc.data();
+                userNameSpan.innerText = data.username || 'User';
+                balanceSpan.innerText = `$${data.balance?.toFixed(2) || '0.00'}`;
+                totalEarnedSpan.innerText = `$${data.totalEarned?.toFixed(2) || '0.00'}`;
+                referralCodeSpan.innerText = data.referralCode || 'N/A';
+                
+                const referralsQuery = query(collection(db, 'users'), where('referredBy', '==', data.referralCode));
+                const referralsSnapshot = await getDocs(referralsQuery);
+                referralsCountSpan.innerText = referralsSnapshot.size;
+                return data;
+            }
+            return null;
+        }
+        
+        window.watchVideo = async () => {
+            const user = auth.currentUser;
+            if (!user) { showToast('Please login first', 'error'); return; }
+            try {
+                const earnings = 0.05;
+                const userRef = doc(db, 'users', user.uid);
+                await updateDoc(userRef, { balance: increment(earnings), totalEarned: increment(earnings) });
+                showToast(`🎉 You earned $${earnings.toFixed(2)}!`, 'success');
+                updateActivity('🎬 Watched a video', earnings);
+            } catch (error) { showToast(error.message, 'error'); }
+        };
+        
+        window.completeQuiz = async () => {
+            const user = auth.currentUser;
+            if (!user) { showToast('Please login first', 'error'); return; }
+            const earnings = Math.floor(Math.random() * 150 + 50) / 100;
+            try {
+                const userRef = doc(db, 'users', user.uid);
+                await updateDoc(userRef, { balance: increment(earnings), totalEarned: increment(earnings) });
+                showToast(`📝 Quiz completed! You earned $${earnings.toFixed(2)}!`, 'success');
+                updateActivity('❓ Completed a quiz', earnings);
+            } catch (error) { showToast(error.message, 'error'); }
+        };
+        
+        function updateActivity(text, amount) {
+            const li = document.createElement('li');
+            li.className = 'activity-item';
+            li.innerHTML = `<span>${text}</span><span style="color:#10b981;">+$${amount.toFixed(2)}</span>`;
+            activityList.insertBefore(li, activityList.firstChild);
+            if (activityList.children.length > 10) {
+                activityList.removeChild(activityList.lastChild);
+            }
+        }
+        
+        window.deposit = () => showToast('💰 Deposit feature coming soon.', 'info');
+        window.withdraw = () => showToast('💸 Withdrawal feature coming soon. Min: $10', 'info');
+        
+        window.copyReferralLink = async () => {
+            const code = referralCodeSpan.innerText;
+            if (code && code !== 'N/A') {
+                const link = `${window.location.origin}/register.html?ref=${code}`;
+                await navigator.clipboard.writeText(link);
+                showToast('✅ Referral link copied!', 'success');
+            }
+        };
+        
+        window.logout = async () => {
+            await signOut(auth);
+            window.location.href = 'index.html';
+        };
+        
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = 'index.html';
+                return;
+            }
+            await ensureUserDocument(user.uid, user.email, user.displayName);
+            await loadUserData(user.uid);
+            
+            const userRef = doc(db, 'users', user.uid);
+            onSnapshot(userRef, (doc) => {
+                if (doc.exists()) {
+                    const data = doc.data();
+                    balanceSpan.innerText = `$${data.balance?.toFixed(2) || '0.00'}`;
+                    totalEarnedSpan.innerText = `$${data.totalEarned?.toFixed(2) || '0.00'}`;
+                }
+            });
+        });
+        
+        // Set active class for current page
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentPage = window.location.pathname.split('/').pop();
+            const navLinks = document.querySelectorAll('.nav-links a');
+            navLinks.forEach(link => {
+                const href = link.getAttribute('href');
+                if (href === currentPage || (currentPage === '' && href === 'dashboard.html')) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">EARNEST</div>
+        <div class="nav-links">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="#" onclick="deposit()">Deposit</a>
+            <a href="#" onclick="withdraw()">Withdraw</a>
+            <a href="#" onclick="copyReferralLink()">Referrals</a>
+            <div class="user-info">
+                <span class="user-name" id="userName">User</span>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <div class="welcome-banner">
+            <h1>Welcome back, <span id="welcomeName">User</span>!</h1>
+            <p>Continue earning by watching videos, completing quizzes, and referring friends.</p>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card"><div class="stat-label">Your Balance</div><div class="stat-value" id="balance">$0.00</div></div>
+            <div class="stat-card"><div class="stat-label">Total Earned</div><div class="stat-value" id="totalEarned">$0.00</div></div>
+            <div class="stat-card"><div class="stat-label">People Referred</div><div class="stat-value" id="referralsCount">0</div></div>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="btn-deposit" onclick="deposit()">💰 DEPOSIT TO EARN MORE</button>
+            <button class="btn-withdraw" onclick="withdraw()">💸 WITHDRAW EARNINGS</button>
+        </div>
+        
+        <h2 class="section-title">Ways to Earn</h2>
+        <div class="earn-grid">
+            <div class="earn-card" onclick="watchVideo()"><div class="earn-icon">🎬</div><h3>Watch Videos</h3><p>Watch short ads and sponsored content</p><div class="earn-amount">Earn: $0.05 per video</div></div>
+            <div class="earn-card" onclick="completeQuiz()"><div class="earn-icon">❓</div><h3>Answer Questions</h3><p>Complete quizzes and surveys</p><div class="earn-amount">Earn: $0.50 - $2 per quiz</div></div>
+            <div class="earn-card" onclick="copyReferralLink()"><div class="earn-icon">👥</div><h3>Referral Program</h3><p>Invite friends and earn commission</p><div class="earn-amount">Earn: $10 per referral</div></div>
+        </div>
+        
+        <div class="referral-section">
+            <h3>Your Referral Link</h3>
+            <p>Share this link with friends. When they sign up, you both get $10!</p>
+            <div><span class="referral-code" id="referralCode">Loading...</span><button class="copy-btn" onclick="copyReferralLink()">Copy Link</button></div>
+        </div>
+        
+        <div class="activity-section">
+            <h3>Recent Activity</h3>
+            <ul class="activity-list" id="activityList">
+                <li class="activity-item">Complete tasks to see activity</li>
+            </ul>
+        </div>
+    </div>
+    
+    <script>
+        const welcomeNameSpan = document.getElementById('welcomeName');
+        const userNameSpan2 = document.getElementById('userName');
+        if (welcomeNameSpan && userNameSpan2) {
+            const observer = new MutationObserver(() => { welcomeNameSpan.innerText = userNameSpan2.innerText; });
+            observer.observe(userNameSpan2, { childList: true, characterData: true, subtree: true });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Earnest</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: #f4f7f6; margin: 0; padding: 20px; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .card { background: white; padding: 30px; border-radius: 12px; width: 100%; max-width: 450px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .header { background: linear-gradient(to right, #004d40, #006064); color: white; padding: 15px; border-radius: 8px; text-align: center; font-weight: bold; margin-bottom: 20px; font-size: 1.5rem; }
+        h2 { text-align: center; color: #333; margin-bottom: 20px; }
+        .input-wrapper { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: 500; color: #555; }
+        input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
+        .phone-hint { font-size: 0.7rem; color: #888; margin-top: -3px; margin-bottom: 5px; }
+        .checkbox-wrapper { display: flex; align-items: center; gap: 10px; margin: 15px 0; }
+        .checkbox-wrapper input { width: auto; }
+        .register-btn { width: 100%; background-color: #ffc107; color: black; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1rem; }
+        .register-btn:disabled { background-color: #ccc; cursor: not-allowed; }
+        .login-link { text-align: center; margin-top: 20px; font-size: 0.85rem; }
+        .login-link a { color: #004d40; text-decoration: none; }
+        .toast { position: fixed; bottom: 30px; right: 30px; background: #ef4444; color: white; padding: 12px 20px; border-radius: 10px; z-index: 1000; animation: slideIn 0.3s ease; }
+        .toast.success { background: #10b981; }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    </style>
+    
+    <script type="module">
+        const firebaseConfig = {
+  apiKey: "AIzaSyCLP5ppkhoba7o3lQo_leBbO_jzaVWNzg8",
+  authDomain: "earnnest-8572a.firebaseapp.com",
+  projectId: "earnnest-8572a",
+  storageBucket: "earnnest-8572a.firebasestorage.app",
+  messagingSenderId: "902250376019",
+  appId: "1:902250376019:web:cbf3dfb67f02261a2f0fa6"
+};
+        
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+        import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+        import { getFirestore, doc, setDoc } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        function showToast(message, type = 'error') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerText = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 4000);
+        }
+        
+        function generateReferralCode() {
+            return Math.random().toString(36).substring(2, 10).toUpperCase();
+        }
+        
+        window.register = async () => {
+            const fullname = document.getElementById('fullname').value;
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const password = document.getElementById('password').value;
+            const terms = document.getElementById('terms-check').checked;
+            const registerBtn = document.querySelector('.register-btn');
+            
+            if (!fullname || !username || !email || !phone || !password) {
+                showToast('Please fill in all fields', 'error');
+                return;
+            }
+            if (!terms) {
+                showToast('You must agree to Terms & Conditions', 'error');
+                return;
+            }
+            if (password.length < 6) {
+                showToast('Password must be at least 6 characters', 'error');
+                return;
+            }
+            if (!phone.startsWith('+')) {
+                showToast('Phone number must start with + and country code (e.g., +2347012345678)', 'error');
+                return;
+            }
+            
+            registerBtn.disabled = true;
+            registerBtn.innerText = 'CREATING ACCOUNT...';
+            
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+                
+                await updateProfile(user, { displayName: username });
+                
+                await setDoc(doc(db, 'users', user.uid), {
+                    fullname: fullname,
+                    username: username,
+                    email: email,
+                    phone: phone,
+                    balance: 5.00,
+                    totalEarned: 5.00,
+                    referralCode: generateReferralCode(),
+                    createdAt: new Date()
+                });
+                
+                showToast('✅ Account created successfully! Redirecting...', 'success');
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1500);
+                
+            } catch (error) {
+                let errorMessage = '';
+                switch (error.code) {
+                    case 'auth/email-already-in-use':
+                        errorMessage = 'Email already registered. Please login.';
+                        break;
+                    case 'auth/weak-password':
+                        errorMessage = 'Password too weak. Use 6+ characters.';
+                        break;
+                    case 'auth/invalid-email':
+                        errorMessage = 'Invalid email address.';
+                        break;
+                    default:
+                        errorMessage = error.message;
+                }
+                showToast(errorMessage, 'error');
+                registerBtn.disabled = false;
+                registerBtn.innerText = 'REGISTER';
+            }
+        };
+    </script>
+</head>
+<body>
+    <div class="card">
+        <div class="header">EARNEST</div>
+        <h2>CREATE ACCOUNT</h2>
+        
+        <div class="input-wrapper">
+            <label>Full Name</label>
+            <input type="text" id="fullname" placeholder="Enter full name">
+        </div>
+        
+        <div class="input-wrapper">
+            <label>Username</label>
+            <input type="text" id="username" placeholder="Create username">
+        </div>
+        
+        <div class="input-wrapper">
+            <label>Email</label>
+            <input type="email" id="email" placeholder="Enter email address">
+        </div>
+        
+        <div class="input-wrapper">
+            <label>Phone Number</label>
+            <input type="tel" id="phone" placeholder="+1234567890 (include country code)">
+            <div class="phone-hint">📱 Include country code: +1 for US, +234 for Nigeria, +44 for UK, etc.</div>
+        </div>
+        
+        <div class="input-wrapper">
+            <label>Password</label>
+            <input type="password" id="password" placeholder="Create password (min 6 characters)">
+        </div>
+        
+        <div class="checkbox-wrapper">
+            <input type="checkbox" id="terms-check">
+            <label>I agree to the <a href="terms.html">Terms & Conditions</a></label>
+        </div>
+        
+        <button class="register-btn" onclick="register()">REGISTER</button>
+        
+        <div class="login-link">
+            Already have an account? <a href="index.html">Login</a>
+        </div>
+    </div>
+</body>
+</html>
