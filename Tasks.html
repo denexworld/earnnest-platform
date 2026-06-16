@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EarnNest Tasks</title>
+
+<style>
+:root{
+    --primary:#004d40;
+    --secondary:#00695c;
+    --bg:#f4f6f8;
+    --white:#fff;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:var(--bg);
+}
+
+.header{
+    background:var(--primary);
+    color:white;
+    text-align:center;
+    padding:20px;
+    font-size:28px;
+    font-weight:bold;
+}
+
+.container{
+    max-width:900px;
+    margin:auto;
+    padding:20px;
+}
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:15px;
+    margin-bottom:20px;
+}
+
+.stat-card{
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    text-align:center;
+    box-shadow:0 3px 10px rgba(0,0,0,.08);
+}
+
+.stat-card h4{
+    color:#777;
+    margin-bottom:10px;
+}
+
+.stat-card h2{
+    color:var(--primary);
+}
+
+.section-title{
+    color:var(--primary);
+    margin:25px 0 10px;
+    border-bottom:3px solid var(--primary);
+    padding-bottom:8px;
+    font-size:22px;
+}
+
+.task-card{
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    margin-bottom:15px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-shadow:0 3px 10px rgba(0,0,0,.08);
+}
+
+.task-info h3{
+    margin-bottom:5px;
+}
+
+.task-info p{
+    color:#666;
+}
+
+.btn{
+    background:var(--primary);
+    color:white;
+    border:none;
+    padding:12px 25px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.btn:hover{
+    background:var(--secondary);
+}
+
+.progress-box{
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    margin-bottom:20px;
+}
+
+.progress-bar{
+    height:15px;
+    background:#ddd;
+    border-radius:20px;
+    overflow:hidden;
+    margin-top:10px;
+}
+
+.progress-fill{
+    width:0%;
+    height:100%;
+    background:var(--primary);
+}
+
+.referral-box{
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    margin-top:20px;
+}
+
+.referral-link{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    border:1px solid #ddd;
+    border-radius:10px;
+}
+
+@media(max-width:768px){
+
+.task-card{
+    flex-direction:column;
+    gap:15px;
+    text-align:center;
+}
+
+.btn{
+    width:100%;
+}
+
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+EarnNest Tasks
+</div>
+
+<div class="container">
+
+<div class="stats">
+
+<div class="stat-card">
+<h4>Balance</h4>
+<h2>$0.00</h2>
+</div>
+
+<div class="stat-card">
+<h4>Today's Earnings</h4>
+<h2>$0.00</h2>
+</div>
+
+<div class="stat-card">
+<h4>Tasks Left</h4>
+<h2>20</h2>
+</div>
+
+<div class="stat-card">
+<h4>Completed</h4>
+<h2 id="completed">0</h2>
+</div>
+
+</div>
+
+<div class="progress-box">
+<h3>Daily Progress</h3>
+<p><span id="progressText">0</span> / 20 Tasks Completed</p>
+
+<div class="progress-bar">
+<div class="progress-fill" id="progressFill"></div>
+</div>
+</div>
+
+<h2 class="section-title">🎁 Daily Bonus</h2>
+
+<div class="task-card">
+<div class="task-info">
+<h3>Daily Login Bonus</h3>
+<p>Claim your daily reward every 24 hours</p>
+</div>
+
+<button class="btn">Claim</button>
+</div>
+
+<h2 class="section-title">📺 Watch Ads (0/5)</h2>
+
+<div class="task-card">
+<div class="task-info">
+<h3>Watch Promotional Ad</h3>
+<p>Reward: $0.02 | Limit: 5/day</p>
+</div>
+
+<button class="btn" onclick="completeTask()">Watch</button>
+</div>
+
+<h2 class="section-title">📱 Social Media Tasks</h2>
+
+<div class="task-card">
+<div class="task-info">
+<h3>Follow on Instagram</h3>
+<p>Reward: $0.05</p>
+</div>
+
+<button class="btn" onclick="completeTask()">Do Task</button>
+</div>
+
+<div class="task-card">
+<div class="task-info">
+<h3>Join Telegram</h3>
+<p>Reward: $0.05</p>
+</div>
+
+<button class="btn" onclick="completeTask()">Do Task</button>
+</div>
+
+<div class="task-card">
+<div class="task-info">
+<h3>Subscribe to YouTube</h3>
+<p>Reward: $0.07</p>
+</div>
+
+<button class="btn" onclick="completeTask()">Do Task</button>
+</div>
+
+<div class="task-card">
+<div class="task-info">
+<h3>Like Facebook Page</h3>
+<p>Reward: $0.05</p>
+</div>
+
+<button class="btn" onclick="completeTask()">Do Task</button>
+</div>
+
+<div class="task-card">
+<div class="task-info">
+<h3>follow us on tiktok</h3>
+<p>Reward: $0.07</p>
+</div>
+
+<button class="btn" onclick="completeTask()">Do Task</button>
+</div>
+
+<h2 class="section-title">🌐 Website Visits</h2>
+
+<div class="task-card">
+<div class="task-info">
+<h3>Visit Partner Website</h3>
+<p>Reward: $0.03</p>
+</div>
+
+<button class="btn" onclick="completeTask()">Visit</button>
+</div>
+
+<h2 class="section-title">👥 Referral Program</h2>
+
+<div class="referral-box">
+
+<h3>Invite Friends & Earn</h3>
+
+<p>
+Earn rewards when people join using your referral link.
+</p>
+
+<input
+class="referral-link"
+value="https://earnnest.com/ref/DENEX123"
+readonly>
+
+<br><br>
+
+<button class="btn">
+Copy Referral Link
+</button>
+
+</div>
+
+</div>
+
+<script>
+
+let completedTasks = 0;
+const dailyLimit = 20;
+
+function completeTask(){
+
+if(completedTasks >= dailyLimit){
+alert("Daily task limit reached. Come back tomorrow.");
+return;
+}
+
+completedTasks++;
+
+document.getElementById("completed").innerText = completedTasks;
+document.getElementById("progressText").innerText = completedTasks;
+
+let percent = (completedTasks / dailyLimit) * 100;
+
+document.getElementById("progressFill").style.width = percent + "%";
+
+alert("Task completed successfully!");
+
+}
+
+</script>
+
+</body>
+</html>
